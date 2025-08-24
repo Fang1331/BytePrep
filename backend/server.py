@@ -242,11 +242,23 @@ class CodeEvaluationService:
         
         # Analyze common patterns
         if "for" in code and "for" in code[code.find("for")+3:]:
-            time_complexity = "O(n²)"
-            efficiency_score = 40
-            optimizations.append("Consider using a hash map to reduce nested loops")
+            # Check if it's actually nested loops (not just multiple separate loops)
+            lines = code.split('\n')
+            nested = False
+            for i, line in enumerate(lines):
+                if 'for ' in line:
+                    # Look for nested for loops (indentation check)
+                    for j in range(i+1, len(lines)):
+                        if lines[j].strip() and lines[j].startswith('    ') and 'for ' in lines[j]:
+                            nested = True
+                            break
             
-        elif "hash" in code.lower() or "dict" in code.lower() or "{}" in code:
+            if nested:
+                time_complexity = "O(n²)"
+                efficiency_score = 40
+                optimizations.append("Consider using a hash map to reduce nested loops")
+            
+        if "hash_map" in code or "dict(" in code or "{}" in code or "enumerate" in code:
             time_complexity = "O(n)"
             space_complexity = "O(n)"
             efficiency_score = 85
