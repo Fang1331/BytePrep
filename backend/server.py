@@ -100,7 +100,7 @@ class UserProgress(BaseModel):
     last_activity: datetime = Field(default_factory=datetime.now)
 
 # LLM Configuration
-GEMINI_API_KEY = "AIzaSyDkOlkSAWPUugmJ1dlx4rpju2-t1JkMMmU"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Initialize LLM clients
 gemini_chat = LlmChat(
