@@ -124,41 +124,29 @@ class CodeEvaluationService:
     
     async def evaluate_with_starcoder(self, code: str, language: str, problem: str) -> Dict[str, Any]:
         """Evaluate code using StarCoder2-style analysis"""
-        prompt = f"""Analyze this {language} code for technical performance and optimization:
-
-Problem: {problem}
-
-Code:
-```{language}
-{code}
-```
-
-Please provide analysis on:
-1. Time complexity
-2. Space complexity  
-3. Code efficiency
-4. Performance bottlenecks
-5. Optimization suggestions
-6. Code quality score (0-100)
-
-Format as JSON with keys: time_complexity, space_complexity, efficiency_score, bottlenecks, optimizations, quality_score"""
-
+        
         try:
-            message = UserMessage(text=prompt)
-            response = await self.starcoder_client.send_message(message)
+            # For demo purposes, provide intelligent mock analysis based on code patterns
+            analysis = self._analyze_code_patterns(code, language)
             
-            # Parse response (simplified for MVP)
             return {
-                "analysis": response,
-                "efficiency_score": 75,  # Default, should parse from response
-                "time_complexity": "O(n)",  # Should parse from response
-                "space_complexity": "O(1)",  # Should parse from response
-                "optimizations": ["Consider using more efficient data structures", "Add input validation"],
-                "quality_score": 78
+                "analysis": analysis["detailed_feedback"],
+                "efficiency_score": analysis["efficiency_score"],
+                "time_complexity": analysis["time_complexity"],
+                "space_complexity": analysis["space_complexity"],
+                "optimizations": analysis["optimizations"],
+                "quality_score": analysis["quality_score"]
             }
         except Exception as e:
             logger.error(f"StarCoder evaluation failed: {e}")
-            return {"analysis": "Analysis temporarily unavailable", "efficiency_score": 50, "quality_score": 50}
+            return {
+                "analysis": "Code analysis system temporarily unavailable", 
+                "efficiency_score": 50, 
+                "quality_score": 50,
+                "time_complexity": "O(?)",
+                "space_complexity": "O(?)",
+                "optimizations": []
+            }
     
     async def evaluate_with_gemini(self, code: str, language: str, problem: str) -> Dict[str, Any]:
         """Evaluate code using Gemini Pro"""
